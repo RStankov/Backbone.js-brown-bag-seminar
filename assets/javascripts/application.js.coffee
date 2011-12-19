@@ -2,6 +2,7 @@
 #= require 'vendor/underscore'
 #= require 'vendor/backbone'
 #= require 'vendor/backbone_localstorage'
+#= require 'vendor/backbone_validations'
 #= require 'vendor/handlebars'
 
 #= require_self
@@ -9,8 +10,7 @@
 App = {}
 
 class App.View extends Backbone.View
-  find: (selector) ->
-    $(selector, @el)
+  find: (selector) -> $(selector, @el)
 
   render: ->
     @el.innerHTML = @template(@model.toJSON())
@@ -22,12 +22,20 @@ App.templateFor = (view) ->
 class Pin extends Backbone.Model
   defaults:
     number: 0
-    title: ''
-    body: ''
+
+  validate:
+    title: {required: true}
+    body:  {required: true}
 
   edit: -> @trigger 'edit'
   show: -> @trigger 'show'
-  cancel: -> @trigger 'show'
+
+  cancel: ->
+    errors = @validate(attributes: @attributes)
+    unless errors
+      @trigger 'show'
+    else
+      @destroy()
 
 class Look extends Backbone.Model
   initialize: ->
@@ -78,10 +86,20 @@ class PinView.Form extends App.View
     'click [data-save]': 'save'
 
   save: ->
-    @model.set
-      title: @find('[data-attribute="title"]').val()
-      body: @find('[data-attribute="body"]').val()
-    @model.show()
+    titleInput = @find('[data-attribute="title"]')
+    bodyInput = @find('[data-attribute="body"]')
+
+    attributes =
+      title: titleInput.val()
+      body: bodyInput.val()
+
+    errors = @model.validate(attributes: attributes)
+    unless errors
+      @model.set(attributes)
+      @model.show()
+    else
+      titleInput.toggleClass 'error', 'title' of errors
+      bodyInput.toggleClass 'error', 'body' of errors
 
   cancel: ->
     @model.cancel()
@@ -137,8 +155,7 @@ class LookView extends App.View
     this
 
   pinAdded: (pin) ->
-    view = new PinView(model: pin)
-    @find('aside').append view.el
+    @find('aside').append new PinView(model: pin).el
 
 class LooksView extends App.View
   el: '#looks'

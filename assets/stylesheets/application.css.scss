@@ -56,6 +56,7 @@ button { padding: 0px; margin: 0px; border: none; background: none; cursor: poin
   section textarea,
   section input { display: block; width: 360px; padding: 5px; border: 1px solid #ddd; }
   section textarea { height: 60px; overflow: auto; resize: vertical; }
+  section .error { border: 1px solid red; }
   section .buttons { font-size: 10px; margin-top: 20px; text-align: right; }
   section .buttons [data-cancel] { margin-right: 10px; text-transform: uppercase; color: #aaaaaa; }
   section .buttons [data-cancel]:hover { text-decoration: underline; }
