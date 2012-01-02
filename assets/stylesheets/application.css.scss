@@ -35,7 +35,8 @@ button { padding: 0px; margin: 0px; border: none; background: none; cursor: poin
   > button:hover { @include opacity(0.5);  }
 
   article { @include clearfix; margin-bottom: 30px; width: 890px; }
-  article .image-wrapper { width: 422px; height: 632px; background: #eee; border: 1px dashed black; }
+  article .image-wrapper { position: relative; width: 422px; height: 632px; background: #eee; border: 1px dashed black; }
+  article .image-wrapper mark { position: absolute; padding: 10px 14px; background: black; color: white; cursor: pointer; }
   article > button { @include button; }
 
   aside { float: right; width: 440px; }
@@ -47,7 +48,7 @@ button { padding: 0px; margin: 0px; border: none; background: none; cursor: poin
   aside header strong { font-weight: bold; text-transform: uppercase; }
 
   section { position: relative; min-height: 47px; padding: 30px 0 0 65px; margin-top: 30px; border-top: 1px solid #ddd; }
-  section mark { position: absolute; top: 30px; left: 0px; padding: 17px; background: black; color: white; font: bold 10px Helvetica, Arial, sans-serif; }
+  section mark { position: absolute; top: 30px; left: 0px; padding: 14px 17px; background: black; color: white; font: bold 10px Helvetica, Arial, sans-serif; }
   section .actions { position: absolute; top: 30px; right: 0px; color: #ddd; }
   section .actions button { text-transform: uppercase; color: #000; text-decoration: underline; font-size: 10px;  }
   section .actions button:hover { text-decoration: none; }

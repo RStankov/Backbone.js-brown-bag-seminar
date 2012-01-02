@@ -1,4 +1,5 @@
 #= require 'vendor/jquery'
+#= require 'vendor/jquery_ui'
 #= require 'vendor/underscore'
 #= require 'vendor/backbone'
 #= require 'vendor/backbone_localstorage'
@@ -22,6 +23,8 @@ App.templateFor = (view) ->
 class Pin extends Backbone.Model
   defaults:
     number: 0
+    x: 220
+    y: 300
 
   validate:
     title: {required: true}
@@ -29,6 +32,15 @@ class Pin extends Backbone.Model
 
   edit: -> @trigger 'edit'
   show: -> @trigger 'show'
+
+  number: -> @get 'number'
+  x: -> @get 'x'
+  y: -> @get 'y'
+
+  setPosition: (position) ->
+    {top, left} = position
+    @attributes.x = left
+    @attributes.y = top
 
   cancel: ->
     errors = @validate(attributes: @attributes)
@@ -52,8 +64,24 @@ class Looks extends Backbone.Collection
 class Pins extends Backbone.Collection
   model: Pin
   maxNumber: ->
-    current = @.max((pin) ->  pin.get 'number')?.get('number')
+    current = @max((pin) ->  pin.get 'number')?.get('number')
     (current or 0) + 1
+
+class PinMakerView extends App.View
+  tagName: 'mark'
+  events:
+    'drag': 'tracePosition'
+
+  initialize: ->
+    @model.bind 'destroy', @remove, this
+
+    $(@el)
+      .html(@model.number())
+      .draggable(containment: 'parent')
+      .css position: 'absolute', top: @model.y(), left: @model.x()
+
+  tracePosition: (e, ui) ->
+    @model.setPosition ui.position
 
 class PinView extends App.View
   tagName: 'section'
@@ -156,6 +184,7 @@ class LookView extends App.View
 
   pinAdded: (pin) ->
     @find('aside').append new PinView(model: pin).el
+    @find('.image-wrapper').append new PinMakerView(model: pin).el
 
 class LooksView extends App.View
   el: '#looks'
