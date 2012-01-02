@@ -114,23 +114,18 @@ class PinView.Form extends App.View
   template: App.templateFor('pin-form')
   events:
     'click [data-cancel]': 'cancel'
-    'click [data-save]': 'save'
+    'click [data-save]':   'save'
+
+  initialize: ->
+    @model.bind 'error', @handlesErrors, this
 
   save: ->
-    titleInput = @find('[data-attribute="title"]')
-    bodyInput = @find('[data-attribute="body"]')
-
     attributes =
-      title: titleInput.val()
-      body: bodyInput.val()
+      title: @find('[data-attribute="title"]').val()
+      body: @find('[data-attribute="body"]').val()
 
-    errors = @model.validate(attributes: attributes)
-    unless errors
-      @model.set(attributes)
+    if @model.set(attributes)
       @model.show()
-    else
-      titleInput.toggleClass 'error', 'title' of errors
-      bodyInput.toggleClass 'error', 'body' of errors
 
   cancel: ->
     @model.cancel()
@@ -143,10 +138,14 @@ class PinView.Form extends App.View
     $(@el).show()
     @find(':input:first').focus()
 
+  handlesErrors: (model, errors) ->
+    @find('[data-attribute="title"]').toggleClass 'error', 'title' of errors
+    @find('[data-attribute="body"]').toggleClass 'error', 'body' of errors
+
 class PinView.Display extends App.View
   template: App.templateFor('pin-display')
   events:
-    'click [data-edit]': 'edit'
+    'click [data-edit]':   'edit'
     'click [data-delete]': 'destroy'
 
   edit: ->
