@@ -33,6 +33,8 @@ class Pin extends Backbone.Model
   edit: -> @trigger 'edit'
   show: -> @trigger 'show'
 
+  isValid: -> not @validate {@attributes}
+
   number: -> @get 'number'
   x: -> @get 'x'
   y: -> @get 'y'
@@ -204,13 +206,16 @@ class LooksView extends App.View
     view = new LookView(model: look)
     @find('[data-add-look]').before view.render().el
 
-  saveLooks: ->
+  saveLooks: (e) ->
+    e.preventDefault()
+
+    return if @collection.any((look) -> look.pins.any (pin) -> not pin.isValid() and pin.edit())
+
     inputs = []
     @collection.each (look, i) =>
       @_inputsFor look, "collection[looks_attributes][#{i}]", inputs
       look.pins.each (pin, j) => @_inputsFor pin, "collection[looks_attributes][#{i}][product_pins_attributes][#{j}]", inputs
     @find('[data-inputs]').html('').append inputs
-    false
 
   _inputsFor: (model, baseName, inputs) ->
     _.each model.toJSON(), (key, value) => inputs.push @make('input', type: 'hidden', name: "#{baseName}[#{key}]", value: value)
