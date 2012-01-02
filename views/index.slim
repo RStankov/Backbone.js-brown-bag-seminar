@@ -6,18 +6,21 @@ html
   body
     #looks
       h1 Upload Looks:
-      button[data-add-look] + Add Look
+      button data-add-look="true" + Add Look
+      .buttons
+        input type="submit" value="Save"
+      div data-inputs="true"
 
     script type="text/template" id="template-look"
       aside
         header
-          button[data-add-pin] Add pin note
+          button data-add-pin="true" Add pin note
           h4 Please describe the details of your design: *
           p ADD pin-notes and DRAG them to the spots you want to describe.
           strong Need help?
 
       .image-wrapper
-      button[data-delete-look] Remove
+      button data-delete-look="true" Remove
 
     script type="text/template" id="template-pin"
       mark {{number}}
@@ -30,15 +33,15 @@ html
         | Short description *:
         textarea data-attribute="body" {{body}}
       .buttons
-        button[data-cancel] Cancel
-        button[data-save] Save
+        button data-cancel="true" Cancel
+        button data-save="true" Save
 
     script type="text/template" id="template-pin-display"
       strong {{title}}
       p {{body}}
       .actions
-        button[data-edit] Edit
+        button data-edit="true" Edit
         '  |
-        button[data-delete] Delete
+        button data-delete="true" Delete
 
     script src="/assets/application.js"

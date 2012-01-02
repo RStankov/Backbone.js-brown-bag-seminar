@@ -50,6 +50,9 @@ class Pin extends Backbone.Model
       @destroy()
 
 class Look extends Backbone.Model
+  defaults:
+    src: 'path'
+
   initialize: ->
     @pins = new Pins()
 
@@ -189,7 +192,8 @@ class LookView extends App.View
 class LooksView extends App.View
   el: '#looks'
   events:
-    'click [data-add-look]': 'addLook'
+    'click [data-add-look]':      'addLook'
+    'click input[type="submit"]': 'saveLooks'
 
   initialize: ->
     @collection.bind 'add', @lookAdded, this
@@ -200,6 +204,17 @@ class LooksView extends App.View
   lookAdded: (look) ->
     view = new LookView(model: look)
     @find('[data-add-look]').before view.render().el
+
+  saveLooks: ->
+    inputs = []
+    @collection.each (look, i) =>
+      @_inputsFor look, "collection[looks_attributes][#{i}]", inputs
+      look.pins.each (pin, j) => @_inputsFor pin, "collection[looks_attributes][#{i}][product_pins_attributes][#{j}]", inputs
+    @find('[data-inputs]').html('').append inputs
+    false
+
+  _inputsFor: (model, baseName, inputs) ->
+    _.each model.toJSON(), (key, value) => inputs.push @make('input', type: 'hidden', name: "#{baseName}[#{key}]", value: value)
 
 window.collection = new Looks()
 window.view = new LooksView(collection: collection)

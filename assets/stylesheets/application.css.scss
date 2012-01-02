@@ -31,6 +31,12 @@ button { padding: 0px; margin: 0px; border: none; background: none; cursor: poin
 
   h1 { text-transform: uppercase;  margin-bottom: 30px; }
 
+  > .buttons { padding-top: 20px; margin-top: 60px; border-top: 1px solid black; text-align: right; }
+  > .buttons input { font: 14 Arial, sans-serif; margin-top: 10px; padding: 9px 13px 10px 13px; cursor: pointer; background: black; color: white; text-transform: uppercase; border: 0; outline: 0; }
+  > .buttons input:hover,
+  > .buttons input:focus { text-decoration: underline; }
+  > .buttons input:active { @include opacity(0.8); text-decoration: underline; }
+
   > button { padding: 20px; font-weight: bold; font-size: 20px; border: 1px dashed black; background: white; }
   > button:hover { @include opacity(0.5);  }
 
